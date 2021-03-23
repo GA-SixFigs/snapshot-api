@@ -10,8 +10,8 @@
 ### SnapShot
 Snapshot is a site where users can upload, share and like images! Users can create a profile and upload photos to share with their friends and family. Unregistered user's will be able to view our gallery of public images and be able to upload their own after signing up.
 ## Project planning Board
-View the whiteboard: Whiteboard
-View the KanBan board: Board
+- View the whiteboard: https://miro.com/app/board/o9J_lNhvVF8=/
+- View the KanBan board: https://trello.com/b/OkZTeVRV/group-project
 ### User Stories  
 -	As a registered user, I would like to sign in with email and password.
 -	As a signed in user, I would like to change password.
@@ -56,4 +56,4 @@ database.
 ### Unsolved Problems
 
 #### Wireframe & ERD
-ERD and Wireframes
+https://miro.com/app/board/o9J_lNhvVF8=/
