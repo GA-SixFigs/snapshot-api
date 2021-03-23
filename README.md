@@ -8,7 +8,7 @@
 -	Deployed Client:
 
 ### SnapShot
-	Snapshot is a site where users can upload, share and like images! Users can create a profile and upload photos to share with their friends and family. Unregistered user's will be able to view our gallery of public images and be able to upload their own after signing up.
+Snapshot is a site where users can upload, share and like images! Users can create a profile and upload photos to share with their friends and family. Unregistered user's will be able to view our gallery of public images and be able to upload their own after signing up.
 ## Project planning Board
 View the whiteboard: Whiteboard
 View the KanBan board: Board
@@ -36,29 +36,22 @@ o	tag
 -	JavaScript
 -	AWS
 ### Resources
-Users
-Request	Response
-Verb	URI	body	Headers	Status	body
-POST	/sign-up	credentials	empty	201, Created	user
-POST	/sign-in	credentials	empty	200 OK	user w/token
-DELETE	/sign-out	empty	token	201 Created	empty
-PATCH	/change-password	passwords	token	204 No Content	user w/token
-Response Errors
-Description	Status	Body
-Invalid incoming request data	400 Bad Request	Error object
-Missing or invalid Authorization token	401 Unauthorized	Unauthorized message
-Pictures
-Request	Response
-Verb	URI	body	Headers	Status	body
-POST	/pictures	{}	token	201, Created	Picture Obj
-GET	/pictures	n/a	token	200, OK	pictures Obj
-GET	/pictures/:id	n/a	token	200, OK	Picture Obj
-DELETE	/pictures/:id	n/a	token	200, Ok	n/a
-PATCH	/pictures/:id	Picture data	token	200, Ok	Picture Obj
-Response Errors
-Description	Status	Body
-Invalid incoming request data	400 Bad Request	Error object
-Missing or invalid Authorization token	401 Unauthorized	Unauthorized message
+###### Users
+| Verb   | URI Pattern  |Body    |Headers  |  Status | Body |
+|--------|--------------|------  |-----  |-------------------|------------|
+| POST   | `/sign-up`   |credentials | empty | 201, Created| user
+| POST   | `/sign-in`   |credentials | empty | 200 Ok | user w/token
+| PATCH  | `/change-password/`|password |token| 204 No Content| user w/token
+| DELETE | `/sign-out/`       | empty|token |   201 Created | empty
+
+###### Pictures
+| Verb   | URI   |Body    |Headers  |  Status | Body |
+|--------|--------------|------  |-----  |-------------------|------------|
+| POST   | `/pictures`   |{} | token | 201, Created| Picture Obj
+| GET   | `/pictures`   |n/a | empty | 200 Ok | Picture Obj
+| GET  | `/pictures/:id`|n/a |token| 200 Ok| Picture Obj
+| DELETE | `/pictures/:id` |n/a |token | 200 Ok | n/a
+| PATCH | `/Pictures/:id` |Picture data | token | 200, Ok | Picture Obj
 
 ### Unsolved Problems
 
