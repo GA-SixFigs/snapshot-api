@@ -9,9 +9,9 @@ const pictureSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
-  },
- },{
-   timestamp: true
+  }
+}, {
+  timestamp: true
 })
 
 module.exports = mongoose.model('Picture', pictureSchema)
