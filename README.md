@@ -13,20 +13,20 @@ Snapshot is a site where users can upload, share and like images! Users can crea
 View the whiteboard: Whiteboard
 View the KanBan board: Board
 ### User Stories  
-•	As a registered user, I would like to sign in with email and password.
-•	As a signed in user, I would like to change password.
-•	As a signed in user, I would like to sign out.
-•	As a signed in user, I would like to upload an image to AWS.
-•	As a signed in user, I would like to update the meta-data of my image on AWS.
-•	As a signed in user, I would like to see the name of all images on AWS.
-•	As a signed in user, I would like to see the thumbnail of all images on AWS.
-•	As a signed in user, I would like to delete the reference of my image from the
+-	As a registered user, I would like to sign in with email and password.
+-	As a signed in user, I would like to change password.
+-	As a signed in user, I would like to sign out.
+-	As a signed in user, I would like to upload an image to AWS.
+-	As a signed in user, I would like to update the meta-data of my image on AWS.
+-	As a signed in user, I would like to see the name of all images on AWS.
+-	As a signed in user, I would like to see the thumbnail of all images on AWS.
+-	As a signed in user, I would like to delete the reference of my image from the
 database.
-•	As a signed in user, I would like to see the following meta-data for any image:
-o	date created/uploaded
-o	date modified
-o	owner (user who uploaded the image)
-o	tag
+-	As a signed in user, I would like to see the following meta-data for any image:
+-- date created/uploaded
+-- date modified
+-- owner (user who uploaded the image)
+-- tag
 
 
 ### Technologies Used
