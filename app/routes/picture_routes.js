@@ -4,6 +4,8 @@ const storage = multer.memoryStorage()
 const upload = multer({ storage })
 const Picture = require('../models/picture')
 
+
+
 const router = express.Router()
 
 const s3Upload = require('../../lib/s3_upload')
@@ -22,16 +24,16 @@ router.post('/pictures', upload.single('picture'), (req, res, next) => {
     .catch(next)
 })
 //
-// // this would just get picture data
-// // INDEX aka GET all
-// router.get('/pictures', requireToken, (req, res, next) => {
-//   picture.find()
-//     .then(pictures => {
-//       return pictures.map(picture => picture.toObject())
-//     })
-//     .then(pictures => res.status(200).json({ pictures: pictures }))
-//     .catch(next)
-// })
+// this would just get picture data
+// INDEX aka GET all
+router.get('/pictures', (req, res, next) => {
+  Picture.find()
+    .then(pictures => {
+      return pictures.map(picture => picture.toObject())
+    })
+    .then(pictures => res.status(200).json({ pictures: pictures }))
+    .catch(next)
+})
 //
 // // SHOW aka get by id
 // router.get('/pictures/:id', requireToken, (req, res, next) => {
