@@ -9,7 +9,7 @@ const router = express.Router()
 const s3Upload = require('../../lib/s3_upload')
 
 router.post('/pictures', upload.single('picture'), (req, res, next) => {
-  console.log(req.file)
+  console.log(req.file, "this is my file in the router post", req.body, "the body", req.data, "the data")
   s3Upload(req.file)
     .then(awsFile => {
       console.log(awsFile)
