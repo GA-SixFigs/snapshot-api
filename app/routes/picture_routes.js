@@ -3,8 +3,14 @@ const multer = require('multer')
 const storage = multer.memoryStorage()
 const upload = multer({ storage })
 const Picture = require('../models/picture')
+
 const customErrors = require('../../lib/custom_errors')
 const handle404 = customErrors.handle404
+
+
+
+
+
 const router = express.Router()
 
 const s3Upload = require('../../lib/s3_upload')
@@ -23,6 +29,10 @@ router.post('/pictures', upload.single('picture'), (req, res, next) => {
     .catch(next)
 })
 
+
+
+//
+
 // this would just get picture data
 // INDEX aka GET all
 router.get('/pictures', (req, res, next) => {
@@ -33,6 +43,10 @@ router.get('/pictures', (req, res, next) => {
     .then(pictures => res.status(200).json({ pictures: pictures }))
     .catch(next)
 })
+
+
+//
+
 // // SHOW aka get by id
 router.get('/pictures/:id', (req, res, next) => {
   console.log(req)
