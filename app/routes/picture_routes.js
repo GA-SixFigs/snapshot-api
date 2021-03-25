@@ -47,7 +47,6 @@ router.get('/pictures', (req, res, next) => {
     .catch(next)
 })
 
-
 //
 
 // // SHOW aka get by id
