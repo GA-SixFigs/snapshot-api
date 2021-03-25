@@ -1,13 +1,13 @@
 const express = require('express')
+const passport = require('passport')
 const multer = require('multer')
 const storage = multer.memoryStorage()
 const upload = multer({ storage })
 const Picture = require('../models/picture')
-
+const requireToken = passport.authenticate('bearer', { session: false })
 const customErrors = require('../../lib/custom_errors')
 const handle404 = customErrors.handle404
-
-
+const requireOwnership = customErrors.requireOwnership
 
 
 
@@ -15,16 +15,19 @@ const router = express.Router()
 
 const s3Upload = require('../../lib/s3_upload')
 
-router.post('/pictures', upload.single('picture'), (req, res, next) => {
+router.post('/pictures', requireToken, upload.single('picture'), (req, res, next) => {
+  console.log(req)
+  req.file.owner = req.user._id
   console.log(req.file, "this is my file in the router post", req.body, "the body", req.data, "the data")
   s3Upload(req.file)
     .then(awsFile => {
       console.log(awsFile)
-      return Picture.create({ url: awsFile.Location })
+      return Picture.create({ url: awsFile.Location, owner: req.user._id })
     })
   //  req.body => { upload: { url: 'www.blank.com' } }
     .then(pictureDoc => {
       res.status(201).json({ picture: pictureDoc })
+      console.log(pictureDoc)
     })
     .catch(next)
 })
@@ -83,16 +86,16 @@ router.get('/pictures/:id', (req, res, next) => {
 //     .catch(next)
 // })
 //
-// // DELETE
-// router.delete('/pictures/:id', requireToken, (req, res, next) => {
-//   picture.findById(req.params.id)
-//     .then(handle404)
-//     .then(picture => {
-//       requireOwnership(req, picture)
-//       picture.deleteOne()
-//     })
-//     .then(() => res.sendStatus(204))
-//     .catch(next)
-// })
+// DELETE
+router.delete('/pictures/:id', requireToken, (req, res, next) => {
+  Picture.findById(req.params.id)
+    .then(handle404)
+    .then(picture => {
+      requireOwnership(req, picture)
+      Picture.deleteOne()
+    })
+    .then(() => res.sendStatus(204))
+    .catch(next)
+})
 
 module.exports = router
