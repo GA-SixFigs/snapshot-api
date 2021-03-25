@@ -12,11 +12,12 @@ const handle404 = customErrors.handle404
 const requireOwnership = customErrors.requireOwnership
 
 const router = express.Router()
-
 const s3Upload = require('../../lib/s3_upload')
 
 router.post('/pictures', requireToken, upload.single('picture'), (req, res, next) => {
-  console.log(req.file, "this is my file in the router post", req.body, "the body", req.user, "")
+  console.log(req)
+  req.file.owner = req.user._id
+  console.log(req.file, "this is my file in the router post", req.body, "the body", req.data, "the data")
   s3Upload(req.file)
     .then(awsFile => {
       console.log(awsFile)
@@ -29,29 +30,25 @@ router.post('/pictures', requireToken, upload.single('picture'), (req, res, next
     })
     .catch(next)
 })
-
 //
-
 // this would just get picture data
 // INDEX aka GET all
 router.get('/pictures', (req, res, next) => {
-    Picture.find()
-        .then(handle404)
-        .then(pictures => {
-            pictures = pictures.map(picture => picture.toObject());
-            return Promise.all(pictures.map(picture => {
-                return User.findById(picture.owner).then(owner => {
-                    picture.ownerName = owner.username
-                    return picture;
-                });
-            }));
-        }).then(pictures => {
-            res.status(200).json({ pictures });
-        }).catch(next);
+  Picture.find()
+      .then(handle404)
+      .then(pictures => {
+          pictures = pictures.map(picture => picture.toObject());
+          return Promise.all(pictures.map(picture => {
+              return User.findById(picture.owner).then(owner => {
+                  picture.ownerName = owner.username
+                  return picture;
+              });
+          }));
+      }).then(pictures => {
+          res.status(200).json({ pictures });
+      }).catch(next);
 });
-
 //
-
 // // SHOW aka get by id
 router.get('/pictures/:id', (req, res, next) => {
   Picture.findById(req.params.id)
@@ -103,6 +100,7 @@ router.delete('/pictures/:id', requireToken, (req, res, next) => {
     .then(picture => {
       requireOwnership(req, picture)
       picture.deleteOne()
+      Picture.deleteOne()
     })
     .then(() => res.sendStatus(204))
     .catch(next)
