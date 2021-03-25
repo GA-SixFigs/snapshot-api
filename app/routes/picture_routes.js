@@ -16,8 +16,6 @@ const router = express.Router()
 const s3Upload = require('../../lib/s3_upload')
 
 router.post('/pictures', requireToken, upload.single('picture'), (req, res, next) => {
-  console.log(req)
-  req.file.owner = req.user._id
   console.log(req.file, "this is my file in the router post", req.body, "the body", req.data, "the data")
   s3Upload(req.file)
     .then(awsFile => {
@@ -31,8 +29,6 @@ router.post('/pictures', requireToken, upload.single('picture'), (req, res, next
     })
     .catch(next)
 })
-
-
 
 //
 
@@ -51,7 +47,7 @@ router.get('/pictures', (req, res, next) => {
 
 // // SHOW aka get by id
 router.get('/pictures/:id', (req, res, next) => {
-  console.log(req)
+  console.log(req.params)
   Picture.findById(req.params.id)
     .then(handle404)
     .then(picture => res.status(200).json({ picture: picture.toObject() }))
@@ -91,7 +87,7 @@ router.delete('/pictures/:id', requireToken, (req, res, next) => {
     .then(handle404)
     .then(picture => {
       requireOwnership(req, picture)
-      Picture.deleteOne()
+      picture.deleteOne()
     })
     .then(() => res.sendStatus(204))
     .catch(next)
