@@ -60,17 +60,17 @@ router.get('/pictures', (req, res, next) => {
 router.get('/pictures/:id', (req, res, next) => {
   Picture.findById(req.params.id)
   .then(handle404)
-  .then(picture => {
-    User.findById(picture.owner)
+  .then(picture => picture.toObject())
+  .then(picture => User.findById(picture.owner)
     .then(owner => {
       picture.ownerName = owner.username
       return picture
     })
     .then(picture => {
-      res.status(200).json({ picture: picture.toObject()})
+      res.status(200).json({ picture: picture })
     })
-  })
-  .catch(next)
+)
+.catch(next)
 })
 //
 // // CREATE aka post
