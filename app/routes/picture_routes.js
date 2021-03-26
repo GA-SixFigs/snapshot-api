@@ -41,7 +41,8 @@ router.get('/pictures', requireToken, (req, res, next) => {
       pictures = pictures.map(picture => picture.toObject())
       return Promise.all(pictures.map(picture => {
         return User.findById(picture.owner).then(owner => {
-          if (!owner.privacy || owner._id === req.user.id) {
+          console.log(owner._id.toString(), req.user.id.toString())
+          if (!owner.privacy || owner._id.toString() === req.user.id.toString()) {
             picture.ownerName = owner.username
             return picture
           } else {
