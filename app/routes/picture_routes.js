@@ -42,13 +42,13 @@ router.get('/pictures', (req, res, next) => {
   })
   .then(pictures => {
     pictures.map(picture => {
-        User.findById(picture.owner)
-        .then(owner => {
-          picture.owner = owner.username
-          console.log(pictures, "my picture with owner")
-          return pictures
-        })
-        .then(pictures => res.status(200).json({ pictures: pictures }))
+      User.findById(picture.owner)
+      .then(owner => {
+        picture.ownerName = owner.username
+        console.log(pictures, "my picture with owner")
+        return pictures
+      })
+      .then(pictures => res.status(200).json({ pictures: pictures }))
     })
   })
   .catch(next)
@@ -63,10 +63,12 @@ router.get('/pictures/:id', (req, res, next) => {
   .then(picture => {
     User.findById(picture.owner)
     .then(owner => {
-      picture.owner = owner.username
+      picture.ownerName = owner.username
       return picture
     })
-    .then(picture => res.status(200).json({ picture: picture.toObject()}))
+    .then(picture => {
+      res.status(200).json({ picture: picture.toObject()})
+    })
   })
   .catch(next)
 })
