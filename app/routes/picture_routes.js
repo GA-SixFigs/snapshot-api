@@ -13,6 +13,7 @@ const requireOwnership = customErrors.requireOwnership
 
 const router = express.Router()
 const s3Upload = require('../../lib/s3_upload')
+const removeBlanks = require('../../lib/remove_blank_fields')
 
 router.post('/pictures', requireToken, upload.single('picture'), (req, res, next) => {
   console.log(req)
@@ -52,9 +53,9 @@ router.get('/pictures', (req, res, next) => {
 // // SHOW aka get by id
 router.get('/pictures/:id', (req, res, next) => {
   Picture.findById(req.params.id)
-  .then(handle404)
-  .then(picture => picture.toObject())
-  .then(picture => User.findById(picture.owner)
+    .then(handle404)
+    .then(picture => picture.toObject())
+    .then(picture => User.findById(picture.owner)
     .then(owner => {
       picture.ownerName = owner.username
       return picture
@@ -65,34 +66,19 @@ router.get('/pictures/:id', (req, res, next) => {
 )
 .catch(next)
 })
-//
-// // CREATE aka post
-// router.post('/pictures', requireToken, (req, res, next) => {
-//   req.body.picture.owner = req.user.id
-//
-//   picture.create(req.body.picture)
-//
-//     .then(picture => {
-//       res.status(201).json({ picture: picture.toObject() })
-//     })
-//     .catch(next)
-// })
-//
-// // UPDATE aka find by id and UPDATE a single post
-// router.patch('/pictures/:id', requireToken, removeBlanks, (req, res, next) => {
-//   delete req.body.picture.owner
-//
-//   picture.findById(req.params.id)
-//     .then(handle404)
-//     .then(picture => {
-//       requireOwnership(req, picture)
-//
-//       return picture.updateOne(req.body.picture)
-//     })
-//     .then(() => res.sendStatus(204))
-//     .catch(next)
-// })
-//
+
+// // UPDATE picture caption
+router.patch('/pictures/:id', requireToken, removeBlanks, (req, res, next) => {
+  delete req.body.picture.owner
+  Picture.findById(req.params.id)
+    .then(handle404)
+    .then(picture => {
+      requireOwnership(req, picture)
+      return picture.updateOne(req.body.picture)
+    })
+    .then(() => res.sendStatus(204))
+    .catch(next)
+})
 // DELETE
 router.delete('/pictures/:id', requireToken, (req, res, next) => {
   Picture.findById(req.params.id)
