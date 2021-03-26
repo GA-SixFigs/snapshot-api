@@ -30,22 +30,27 @@ router.post('/pictures', requireToken, upload.single('picture'), (req, res, next
     .catch(next)
 })
 
-//
-
 // this would just get picture data
 // INDEX aka GET all
-router.get('/pictures', (req, res, next) => {
+router.get('/pictures', requireToken, (req, res, next) => {
+  // find all pictures where the privacy of the owner is false
+  // if the owner is getting the pictures, show them their pictures as well
   Picture.find()
     .then(handle404)
     .then(pictures => {
       pictures = pictures.map(picture => picture.toObject())
       return Promise.all(pictures.map(picture => {
         return User.findById(picture.owner).then(owner => {
-          picture.ownerName = owner.username
-          return picture
+          if (!owner.privacy || owner._id === req.user.id) {
+            picture.ownerName = owner.username
+            return picture
+          } else {
+            return 'private'
+          }
         })
       }))
     }).then(pictures => {
+      console.log(pictures)
       res.status(200).json({ pictures })
     }).catch(next)
 })
@@ -53,7 +58,6 @@ router.get('/pictures', (req, res, next) => {
 //
 // INDEX aka GET all
 router.get('/home', requireToken, (req, res, next) => {
-  console.log(req.user)
   Picture.find({ owner: req.user.id })
     .then(handle404)
     .then(pictures => {
@@ -65,7 +69,6 @@ router.get('/home', requireToken, (req, res, next) => {
         })
       }))
     }).then(pictures => {
-      console.log(pictures, 'my users pictures')
       res.status(200).json({ pictures })
     }).catch(next)
 })

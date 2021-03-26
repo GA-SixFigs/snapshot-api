@@ -151,7 +151,7 @@ router.patch('/change-privacy', requireToken, (req, res, next) => {
     // respond with no content and status 200
     .then((user) => {
       console.log(user, 'should have updated privacy')
-      res.sendStatus(204)
+      res.status(200).json({ user })
     })
     // pass any errors along to the error handler
     .catch(next)
