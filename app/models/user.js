@@ -19,6 +19,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  privacy: {
+    type: Boolean,
+    default: false,
+    required: true
+  },
   token: String
 }, {
   timestamps: true,

@@ -3,9 +3,9 @@
 ### Important Links
 -	Front-End-Repo: https://github.com/GA-SixFigs/snapshot-client
 
--	Deployed API:
+-	Deployed API: https://zoomies-snapshot.herokuapp.com
 
--	Deployed Client:
+-	Deployed Client: https://ga-sixfigs.github.io/snapshot-client/
 
 ### SnapShot
 Snapshot is a site where users can upload, share and like images! Users can create a profile and upload photos to share with their friends and family. Unregistered user's will be able to view our gallery of public images and be able to upload their own after signing up.
