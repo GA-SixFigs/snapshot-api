@@ -12,11 +12,14 @@ const handle404 = customErrors.handle404
 const requireOwnership = customErrors.requireOwnership
 
 const router = express.Router()
-
 const s3Upload = require('../../lib/s3_upload')
+const removeBlanks = require('../../lib/remove_blank_fields')
 
 router.post('/pictures', requireToken, upload.single('picture'), (req, res, next) => {
-  console.log(req.file, 'this is my file in the router post', req.body, 'the body', req.user, '')
+  console.log(req)
+  req.file.owner = req.user._id
+  console.log(req.file, "this is my file in the router post", req.body, "the body", req.data, "the data")
+
   s3Upload(req.file)
     .then(awsFile => {
       console.log(awsFile)
@@ -74,50 +77,36 @@ router.get('/home', requireToken, (req, res, next) => {
     }).catch(next)
 })
 
+
 // // SHOW aka get by id
 router.get('/pictures/:id', (req, res, next) => {
   Picture.findById(req.params.id)
     .then(handle404)
     .then(picture => picture.toObject())
     .then(picture => User.findById(picture.owner)
-      .then(owner => {
-        picture.ownerName = owner.username
-        return picture
-      })
-      .then(picture => {
-        res.status(200).json({ picture: picture })
-      })
+    .then(owner => {
+      picture.ownerName = owner.username
+      return picture
+     })
+    .then(picture => {
+       res.status(200).json({ picture: picture })
+     })
     )
     .catch(next)
 })
-//
-// // CREATE aka post
-// router.post('/pictures', requireToken, (req, res, next) => {
-//   req.body.picture.owner = req.user.id
-//
-//   picture.create(req.body.picture)
-//
-//     .then(picture => {
-//       res.status(201).json({ picture: picture.toObject() })
-//     })
-//     .catch(next)
-// })
-//
-// // UPDATE aka find by id and UPDATE a single post
-// router.patch('/pictures/:id', requireToken, removeBlanks, (req, res, next) => {
-//   delete req.body.picture.owner
-//
-//   picture.findById(req.params.id)
-//     .then(handle404)
-//     .then(picture => {
-//       requireOwnership(req, picture)
-//
-//       return picture.updateOne(req.body.picture)
-//     })
-//     .then(() => res.sendStatus(204))
-//     .catch(next)
-// })
-//
+
+// // UPDATE picture caption
+router.patch('/pictures/:id', requireToken, removeBlanks, (req, res, next) => {
+  delete req.body.picture.owner
+  Picture.findById(req.params.id)
+    .then(handle404)
+    .then(picture => {
+      requireOwnership(req, picture)
+      return picture.updateOne(req.body.picture)
+    })
+    .then(() => res.sendStatus(204))
+    .catch(next)
+})
 // DELETE
 router.delete('/pictures/:id', requireToken, (req, res, next) => {
   Picture.findById(req.params.id)
@@ -125,6 +114,7 @@ router.delete('/pictures/:id', requireToken, (req, res, next) => {
     .then(picture => {
       requireOwnership(req, picture)
       picture.deleteOne()
+      Picture.deleteOne()
     })
     .then(() => res.sendStatus(204))
     .catch(next)
