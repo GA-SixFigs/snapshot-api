@@ -9,6 +9,10 @@ const pictureSchema = new mongoose.Schema({
     type: String,
     required: false
   },
+  tag: {
+    type: String,
+    required: false
+  },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
