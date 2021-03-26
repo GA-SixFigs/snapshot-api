@@ -35,24 +35,20 @@ router.post('/pictures', requireToken, upload.single('picture'), (req, res, next
 // this would just get picture data
 // INDEX aka GET all
 router.get('/pictures', (req, res, next) => {
-  Picture.find()
-  .then(handle404)
-  .then(pictures => {
-    return pictures.map(picture => picture.toObject())
-  })
-  .then(pictures => {
-    pictures.map(picture => {
-      User.findById(picture.owner)
-      .then(owner => {
-        picture.ownerName = owner.username
-        console.log(pictures, "my picture with owner")
-        return pictures
-      })
-      .then(pictures => res.status(200).json({ pictures: pictures }))
-    })
-  })
-  .catch(next)
-})
+    Picture.find()
+        .then(handle404)
+        .then(pictures => {
+            pictures = pictures.map(picture => picture.toObject());
+            return Promise.all(pictures.map(picture => {
+                return User.findById(picture.owner).then(owner => {
+                    picture.ownerName = owner.username
+                    return picture;
+                });
+            }));
+        }).then(pictures => {
+            res.status(200).json({ pictures });
+        }).catch(next);
+});
 
 //
 
