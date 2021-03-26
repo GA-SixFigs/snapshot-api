@@ -38,6 +38,7 @@ router.post('/pictures', requireToken, upload.single('picture'), (req, res, next
 router.get('/pictures', requireToken, (req, res, next) => {
   // find all pictures where the privacy of the owner is false
   // if the owner is getting the pictures, show them their pictures as well
+  console.log(req.user, "my user")
   Picture.find()
     .then(handle404)
     .then(pictures => {
@@ -46,6 +47,30 @@ router.get('/pictures', requireToken, (req, res, next) => {
         return User.findById(picture.owner).then(owner => {
           console.log(owner._id.toString(), req.user.id.toString())
           if (!owner.privacy || owner._id.toString() === req.user.id.toString()) {
+            picture.ownerName = owner.username
+            return picture
+          } else {
+            return 'private'
+          }
+        })
+      }))
+    }).then(pictures => {
+      console.log(pictures)
+      res.status(200).json({ pictures })
+    }).catch(next)
+})
+
+router.get('/gallery', (req, res, next) => {
+  // find all pictures where the privacy of the owner is false
+  // if the owner is getting the pictures, show them their pictures as well
+  Picture.find()
+    .then(handle404)
+    .then(pictures => {
+      pictures = pictures.map(picture => picture.toObject())
+      return Promise.all(pictures.map(picture => {
+        return User.findById(picture.owner).then(owner => {
+          console.log(owner._id.toString())
+          if (!owner.privacy) {
             picture.ownerName = owner.username
             return picture
           } else {
